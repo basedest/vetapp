@@ -1,0 +1,18 @@
+services:
+  web:
+    image: nginx:latest
+    ports:
+    - "8080:80"
+    volumes:
+    - ./static:/usr/share/nginx/html
+  database:
+    image: postgres:latest
+    restart: always
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5433:5432 # TODO: change back to 5432 (had to change to 5433 to avoid conflict with local postgres)
+    volumes:
+      - './sql/:/docker-entrypoint-initdb.d/'
