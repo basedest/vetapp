@@ -1,6 +1,6 @@
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import {Middleware} from "express-validator/src/base";
-import {UserRole} from "../entities/user";
+import {JWTPayloadWithUser, UserRole} from "../entities/user";
 
 const secret = process.env.JWT_SECRET;
 
@@ -38,8 +38,8 @@ export const RoleMiddleware = (role: UserRole) => {
             if (!token) {
                 return res.status(403).json({message: "Unauthenticated user"});
             }
-            const {role: userRole} = jwt.verify(token, secret) as JwtPayload & { role: UserRole };
-            if (userRole !== role) {
+            const {user} = jwt.verify(token, secret) as JWTPayloadWithUser;
+            if (user.role !== role) {
                 return res.status(403).json({message: "Permission denied"});
             }
             next();

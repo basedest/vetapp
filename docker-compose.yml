@@ -1,10 +1,18 @@
+version: '3'
+
 services:
   web:
     image: nginx:latest
     ports:
     - "8080:80"
+    links:
+      - "app:app"
     volumes:
     - ./static:/usr/share/nginx/html
+    - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    restart: always
   database:
     image: postgres:latest
     restart: always
@@ -13,6 +21,18 @@ services:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - 5433:5432 # TODO: change back to 5432 (had to change to 5433 to avoid conflict with local postgres)
+      - "5433:5432" # TODO: change back to 5432 (had to change to 5433 to avoid conflict with local postgres)
     volumes:
       - './sql/:/docker-entrypoint-initdb.d/'
+  app:
+    tty: true
+    build:
+        context: .
+    expose:
+      - "${APP_PORT}"
+    env_file:
+      - .env
+    #volumes:
+    #   - .:/usr/src/app
+    depends_on:
+        - database

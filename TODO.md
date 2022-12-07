@@ -9,31 +9,33 @@
 - [x] Каждому клиенту дается скидка постоянного клиента, если он обращается в клинику более 5 раз
      или общая сумма потраченных им денег составляет более 15к рублей.
 - [x] Отображение инфы о себе сотрудником (ЛК можно зафигачить)
-- [ ] Подсчет записей к специалисту (берем количество строк в визитах где совпадает IDшник и не паримся)
+- [x] Подсчет записей к специалисту (берем количество строк в визитах где совпадает IDшник и не паримся)
 - [ ] Сотрудники могут CRUD'ать таблицы клиентов и визитов (по логике только в своём филиале, но ТЗ об этом умалчивает)
 - [ ] Менеджеры могут CRUD'ать таблицы сотрудников и бонусов.
 - [ ] Директор может CRUD'ать всё.
 
 # API
-- GET /clients - получить всех клиентов
-- GET /clients/:id - инфа по клиенту
-- POST /clients/:id - добавить клиента
-- PUT /clients/:id - изменить данные по клиенту
-- DELETE /clients/:id - удаление клиента
-- GET /employees
-- GET /employees/:id
-- POST /employees/:id
-- PUT /employees/:id
-- DELETE /employees/:id
-- POST /bonus/:employeeId - добавить бонус {date: "yyyy-mm-dd"}
-- GET /visits
-- GET /visits/:id
-- POST /visits/:id
-- PUT /visits/:id
-- DELETE /visits/:id
-- GET /branches
-- POST /branches
-- DELETE /branches
+- [ ] `GET   ` /clients - получить всех клиентов
+- [ ] `GET   ` /clients/:id - инфа по клиенту
+- [ ] `POST  ` /clients/:id - добавить клиента
+- [ ] `PUT   ` /clients/:id - изменить данные по клиенту
+- [ ] `DELETE` /clients/:id - удаление клиента
+- [ ] `GET   ` /employees
+- [ ] `GET   ` /employees/:id
+- [ ] `POST  ` /employees/:id
+- [ ] `PUT   ` /employees/:id
+- [ ] `DELETE` /employees/:id
+- [ ] `POST  ` /employee/:employeeId/bonus - добавить бонус {date: "yyyy-mm-dd"}
+- [ ] `GET   ` /employee/:employeeId/bonus - получить бонусы сотрудника
+- [ ] `GET   ` /employee/:employeeId/visits - получить визиты сотрудника
+- [ ] `GET   ` /employee/:employeeId/appointments 
+- [ ] `GET   ` /visits
+- [ ] `GET   ` /visits/:id
+- [ ] `POST  ` /visits/:id
+- [ ] `PUT   ` /visits/:id
+- [ ] `DELETE` /visits/:id
+- [ ] `GET   ` /branches
+- [ ] `POST  ` /branches
 
 Авторизация:
 - POST /auth/register
@@ -43,7 +45,7 @@
 
 - [x] дописать дефолтные значения
 - [x] сделать БД логику
-- [ ] протестить запросы в СУБД
+- [x] протестить запросы в СУБД
 - [ ] запилить бэк
 - [ ] протестить апишку
 - [ ] запилить фронт-апи и протестить

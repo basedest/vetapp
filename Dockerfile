@@ -3,13 +3,14 @@ FROM node:18
 # создание директории приложения
 WORKDIR /usr/src/app
 
-# установка зависимостей
-COPY package.json ./
-RUN npm install
+## установка зависимостей
+COPY package.json yarn.lock ./
+#RUN yarn global add typescript
+RUN yarn
 
 # копирование исходного кода
-COPY dist .
+COPY dist ./dist
 
 # запуск приложения
-EXPOSE 8080
-CMD [ "node", "index.js" ]
+EXPOSE 3000
+CMD ["sh", "-c", "yarn start"]
