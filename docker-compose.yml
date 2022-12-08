@@ -4,7 +4,7 @@ services:
   web:
     image: nginx:latest
     ports:
-    - "80:80"
+    - "8080:80" # TODO: Change this to 80:80 later
     links:
       - "app:app"
     volumes:
@@ -12,6 +12,8 @@ services:
     - ./nginx:/etc/nginx/conf.d
     depends_on:
       - app
+      - database
+      - pgadmin
     restart: always
   database:
     image: postgres:latest
@@ -21,7 +23,7 @@ services:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432" # TODO: change back to 5432 (had to change to 5433 to avoid conflict with local postgres)
+      - "5433:5432" # TODO: change back to 5432 (had to change to 5433 to avoid conflict with local postgres)
     volumes:
       - './sql/:/docker-entrypoint-initdb.d/'
   app:
@@ -36,3 +38,13 @@ services:
        - .:/usr/src/app
     depends_on:
         - database
+  pgadmin:
+    depends_on:
+      - database
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: director@vetapp.com
+      PGADMIN_DEFAULT_PASSWORD: 123123
+    expose:
+      - "80"
+    restart: always
