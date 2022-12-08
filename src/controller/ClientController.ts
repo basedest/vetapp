@@ -5,7 +5,7 @@ class ClientController {
     public async get(req: Request, res: Response) {
         try {
             const clients = await repository.getClients();
-            res.json(clients);
+            res.json({clients});
         } catch (e:any) {
             res.status(500).send({message: e.message});
         }
@@ -15,7 +15,7 @@ class ClientController {
         try {
             const {client:payload} = req.body;
             const client = await repository.createClient(payload);
-            res.json(client);
+            res.json({client});
         } catch (e:any) {
             res.status(500).send({message: e.message});
         }
@@ -29,7 +29,7 @@ class ClientController {
                 return res.status(400).json({message: 'Invalid id'});
             }
             const client = await repository.updateClient(payload);
-            res.json(client);
+            res.json({client});
         } catch (e:any) {
             res.status(500).send({message: e.message});
         }
@@ -41,8 +41,8 @@ class ClientController {
             if (isNaN(id)) {
                 return res.status(400).json({message: 'Invalid id'});
             }
-            const client = await repository.deleteClient(id);
-            res.json(client);
+            await repository.deleteClient(id);
+            res.status(200).json({message: 'Client deleted'});
         } catch (e:any) {
             res.status(500).send({message: e.message});
         }

@@ -1,13 +1,13 @@
 .PHONY: frontend
 frontend:
 	cd frontend
-	npm install
-	npm run build
+	yarn install
+	yarn build
 
 .PHONY: backend
 backend:
-	npm install
-	npm run build
+	yarn install
+	yarn build
 
 .PHONY: build
 build: frontend backend

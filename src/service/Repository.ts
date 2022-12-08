@@ -141,7 +141,7 @@ class Repository {
 
     public async createUser(user: UserAuth): Promise<User> {
         const res = await this.db.query(
-            "INSERT INTO users (username, password, role_id) VALUES ($1, $2, $3) RETURNING *",
+            "INSERT INTO users (username, password, role_id) VALUES ($1, $2, $3) RETURNING id, username, role_id",
             [user.username, user.password, user.role]
         );
         return res.rows[0];

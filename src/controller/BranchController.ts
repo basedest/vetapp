@@ -5,16 +5,16 @@ class BranchController {
     public async get(req: Request, res: Response) {
         try {
             const branches = await repository.getBranches();
-            res.json(branches);
+            res.json({branches});
         } catch (e:any) {
             res.status(500).send({message: e.message});
         }
     }
 
-    public create(req: Request, res: Response) {
+    public async create(req: Request, res: Response) {
         try {
-            const branch = repository.createBranch(req.body.city);
-            res.json(branch);
+            await repository.createBranch(req.body.city);
+            res.status(201).json({message: 'Branch created'});
         } catch (e:any) {
             res.status(500).send({message: e.message});
         }

@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 const generateAccessToken = (user: User) => {
-    return jwt.sign(user, process.env.JWT_SECRET!, {expiresIn: "7d"} )
+    return jwt.sign({user}, process.env.JWT_SECRET!, {expiresIn: "7d"} )
 }
 
 class UserController {
@@ -52,7 +52,7 @@ class UserController {
     public async getUsers(req: Request, res: Response) {
         try {
             const users = await repository.getUsers();
-            res.json(users);
+            res.json({users});
         } catch (e) {
             console.log(e);
             res.status(400).json({message: 'Get users error'});

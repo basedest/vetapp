@@ -5,7 +5,7 @@ class VisitController {
     public async getVisits(req: Request, res: Response) {
         try {
             const visits = await Repository.getVisits();
-            res.json(visits);
+            res.json({visits});
         } catch (e) {
             console.log(e);
             res.status(400).json({message: 'Get visits error'});
@@ -18,7 +18,7 @@ class VisitController {
                 return res.status(400).json({message: 'Incorrect visit id'});
             }
             const visit = await Repository.getVisitById(id);
-            res.json(visit);
+            res.json({visit});
         } catch (e) {
             console.log(e);
             res.status(400).json({message: 'Get visit error'});
@@ -27,7 +27,7 @@ class VisitController {
 
     public async createVisit(req: Request, res: Response) {
         try {
-            const visit = req.body;
+            const {visit} = req.body;
             await Repository.createVisit(visit);
             res.json({message: 'Visit created'});
         } catch (e) {
@@ -38,7 +38,7 @@ class VisitController {
 
     public async updateVisit(req: Request, res: Response) {
         try {
-            const visit = req.body;
+            const {visit} = req.body;
             await Repository.updateVisit(visit);
             res.json({message: 'Visit updated'});
         } catch (e) {

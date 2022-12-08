@@ -1,9 +1,10 @@
 import {Router} from 'express';
 import BranchController from "../controller/BranchController";
+import {AuthMiddleware, RoleMiddleware} from "../middleware/auth";
 
 const router = Router();
 
-router.get("/branches", BranchController.get);
-router.post("/branches", BranchController.create);
+router.get("/branches", AuthMiddleware, BranchController.get);
+router.post("/branches", RoleMiddleware(["admin"]), BranchController.create);
 
 export default router;

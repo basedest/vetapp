@@ -6,7 +6,7 @@ class EmployeeController {
     public async getAll(req: Request, res: Response) {
         try {
             const employees = await repository.getEmployees();
-            res.json(employees);
+            res.json({employees});
         }
         catch (e) {
             console.log(e);
@@ -20,7 +20,7 @@ class EmployeeController {
                 return res.status(400).json({message: 'Invalid id'});
             }
             const employee = await repository.getEmployeeById(id);
-            res.json(employee);
+            res.json({employee});
         }
         catch (e) {
             console.log(e);
@@ -31,8 +31,8 @@ class EmployeeController {
     public async create(req: Request, res: Response) {
         try {
             const {branch} = req.body;
-            const {emp} = req.body;
-            await repository.createEmployee(emp, branch);
+            const {employee} = req.body;
+            await repository.createEmployee(employee, branch);
             res.status(201).json({message: 'Employee created'});
         }
         catch (e) {
@@ -44,11 +44,11 @@ class EmployeeController {
     public async update(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id);
-            const {emp} = req.body;
-            if (isNaN(id) || emp?.id !== id) {
+            const {employee} = req.body;
+            if (isNaN(id) || employee?.id !== id) {
                 return res.status(400).json({message: 'Invalid id'});
             }
-            await repository.updateEmployee(emp);
+            await repository.updateEmployee(employee);
             res.status(200).json({message: 'Employee updated'});
         }
         catch (e) {
@@ -79,7 +79,7 @@ class EmployeeController {
                 return res.status(400).json({message: 'Invalid id'});
             }
             const bonuses = await repository.getEmployeeBonuses(id);
-            res.json(bonuses);
+            res.json({bonuses});
         }
         catch (e) {
             console.log(e);
@@ -94,11 +94,11 @@ class EmployeeController {
                 return res.status(400).json({errors});
             }
             const id = parseInt(req.params.id);
-            const {bonus} = req.body;
+            const {day} = req.body as {day: Date};
             if (isNaN(id)) {
                 return res.status(400).json({message: 'Invalid id'});
             }
-            await repository.giveBonus(id, bonus);
+            await repository.giveBonus(id, day);
             res.status(200).json({message: 'Bonus given'});
         }
         catch (e) {
@@ -114,7 +114,7 @@ class EmployeeController {
                 return res.status(400).json({message: 'Invalid id'});
             }
             const visits = await repository.getEmployeeVisits(id);
-            res.json(visits);
+            res.json({visits});
         }
         catch (e) {
             console.log(e);
@@ -129,7 +129,7 @@ class EmployeeController {
                 return res.status(400).json({message: 'Invalid id'});
             }
             const count = await repository.getTotalAppointments(id);
-            res.json(count);
+            res.json({count});
         }
         catch (e) {
             console.log(e);

@@ -15,27 +15,26 @@
 - [ ] Директор может CRUD'ать всё.
 
 # API
-- [ ] `GET   ` /clients - получить всех клиентов
-- [ ] `GET   ` /clients/:id - инфа по клиенту
-- [ ] `POST  ` /clients/:id - добавить клиента
-- [ ] `PUT   ` /clients/:id - изменить данные по клиенту
-- [ ] `DELETE` /clients/:id - удаление клиента
-- [ ] `GET   ` /employees
-- [ ] `GET   ` /employees/:id
-- [ ] `POST  ` /employees/:id
-- [ ] `PUT   ` /employees/:id
-- [ ] `DELETE` /employees/:id
-- [ ] `POST  ` /employee/:employeeId/bonus - добавить бонус {date: "yyyy-mm-dd"}
-- [ ] `GET   ` /employee/:employeeId/bonus - получить бонусы сотрудника
-- [ ] `GET   ` /employee/:employeeId/visits - получить визиты сотрудника
-- [ ] `GET   ` /employee/:employeeId/appointments 
-- [ ] `GET   ` /visits
-- [ ] `GET   ` /visits/:id
-- [ ] `POST  ` /visits/:id
-- [ ] `PUT   ` /visits/:id
-- [ ] `DELETE` /visits/:id
-- [ ] `GET   ` /branches
-- [ ] `POST  ` /branches
+- [x] `GET   ` /clients - получить всех клиентов
+- [x] `POST  ` /clients/:id - добавить клиента
+- [x] `PUT   ` /clients/:id - изменить данные по клиенту
+- [x] `DELETE` /clients/:id - удаление клиента
+- [x] `GET   ` /employees
+- [x] `GET   ` /employees/:id
+- [x] `POST  ` /employees/:id
+- [x] `PUT   ` /employees/:id
+- [x] `DELETE` /employees/:id
+- [x] `POST  ` /employee/:id/bonus - добавить бонус {date: "yyyy-mm-dd"}
+- [x] `GET   ` /employee/:id/bonus - получить бонусы сотрудника
+- [x] `GET   ` /employee/:id/visits - получить визиты сотрудника
+- [x] `GET   ` /employee/:id/appointments 
+- [x] `GET   ` /visits
+- [x] `GET   ` /visits/:id
+- [x] `POST  ` /visits/:id
+- [x] `PUT   ` /visits/:id
+- [x] `DELETE` /visits/:id
+- [x] `GET   ` /branches
+- [x] `POST  ` /branches
 
 Авторизация:
 - POST /auth/register
@@ -46,8 +45,8 @@
 - [x] дописать дефолтные значения
 - [x] сделать БД логику
 - [x] протестить запросы в СУБД
-- [ ] запилить бэк
-- [ ] протестить апишку
+- [x] запилить бэк
+- [x] протестить апишку
 - [ ] запилить фронт-апи и протестить
 - [ ] запилить UI
 

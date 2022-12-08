@@ -14,8 +14,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- trigger after insert in visits that checks if client has more than 5 visits or spent at least 15k and if so, sets regular_customer to true
-CREATE OR REPLACE FUNCTION check_regular_customer() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION clients_after_visit() RETURNS TRIGGER AS $$
 BEGIN
+    UPDATE clients SET total_visits = total_visits + 1, total_spent = total_spent + NEW.cost WHERE clients.id = NEW.client_id;
     IF (SELECT total_visits(NEW.client_id) > 5 OR (SELECT total_spent FROM clients WHERE id = NEW.client_id) > 15000) THEN
         UPDATE clients SET regular_customer = TRUE WHERE id = NEW.client_id;
     END IF;
@@ -23,7 +24,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER check_regular_customer AFTER INSERT ON visits FOR EACH ROW EXECUTE PROCEDURE check_regular_customer();
+CREATE TRIGGER clients_after_visit AFTER INSERT ON visits FOR EACH ROW EXECUTE PROCEDURE clients_after_visit();
 
 -- view that joins employees and their branches
 CREATE OR REPLACE VIEW employees_with_branches_view AS
@@ -48,9 +49,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- table function that takes a employee id and returns all his bonuses
-CREATE OR REPLACE FUNCTION employee_bonuses(employeeId INTEGER) RETURNS TABLE (bonus INTEGER) AS $$
+CREATE OR REPLACE FUNCTION employee_bonuses(employeeId INTEGER) RETURNS TABLE ("id" INTEGER, "amount" INTEGER, "day" DATE) AS $$
 BEGIN
-    RETURN QUERY SELECT id, amount, day FROM bonuses WHERE employeeId = bonuses.employee_id;
+    RETURN QUERY SELECT bonuses.id, bonuses.amount, bonuses.day FROM bonuses WHERE employeeId = bonuses.employee_id;
 END;
 $$ LANGUAGE plpgsql;
 
