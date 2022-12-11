@@ -1,7 +1,7 @@
 import {validationResult} from "express-validator";
 import {Request, Response} from "express";
 import repository from "../service/Repository";
-import {User, RoleIds} from "../entities/user";
+import {User, RoleIds, idToRole} from "../entities/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 

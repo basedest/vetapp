@@ -9,7 +9,7 @@ CREATE TABLE clients (
      animal_kind VARCHAR(255) NOT NULL,
      animal_name VARCHAR(255) NOT NULL,
      animal_gender VARCHAR(255) NOT NULL,
-     last_visit DATE NOT NULL,
+     last_visit DATE,
      total_spent INTEGER NOT NULL,
      total_visits INTEGER NOT NULL,
      regular_customer BOOLEAN NOT NULL

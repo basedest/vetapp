@@ -1,5 +1,5 @@
 export interface Client {
-    id              : number
+    id?             : number
     full_name       : string
     animal_kind     : string
     animal_name     : string

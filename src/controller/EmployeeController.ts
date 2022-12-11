@@ -30,9 +30,8 @@ class EmployeeController {
 
     public async create(req: Request, res: Response) {
         try {
-            const {branch} = req.body;
             const {employee} = req.body;
-            await repository.createEmployee(employee, branch);
+            await repository.createEmployee(employee);
             res.status(201).json({message: 'Employee created'});
         }
         catch (e) {
@@ -45,7 +44,7 @@ class EmployeeController {
         try {
             const id = parseInt(req.params.id);
             const {employee} = req.body;
-            if (isNaN(id) || employee?.id !== id) {
+            if (isNaN(id) || parseInt(employee?.id) !== id) {
                 return res.status(400).json({message: 'Invalid id'});
             }
             await repository.updateEmployee(employee);

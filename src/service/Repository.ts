@@ -5,7 +5,7 @@ import {Employee} from "../entities/employee";
 import {Branch} from "../entities/branch";
 import {Bonus} from "../entities/bonus";
 import {Visit} from "../entities/visit";
-import {User, UserAuth, UserWithPassword} from "../entities/user";
+import {idToRole, RoleIds, User, UserAuth, UserWithPassword} from "../entities/user";
 
 class Repository {
     private db: Pool;
@@ -33,8 +33,8 @@ class Repository {
 
     public async createClient(client: Client): Promise<void> {
         await this.db.query(
-            "INSERT INTO clients (full_name, animal_kind, animal_name, animal_gender, last_visit, total_spent, total_visits, regular_customer) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-            [client.full_name, client.animal_kind, client.animal_name, client.animal_gender, client.last_visit, client.total_spent, client.total_visits, client.regular_customer]
+            "INSERT INTO clients (full_name, animal_kind, animal_name, animal_gender, total_spent, total_visits, regular_customer) VALUES ($1, $2, $3, $4, 0, 0, false)",
+            [client.full_name, client.animal_kind, client.animal_name, client.animal_gender]
         );
     }
 
@@ -59,10 +59,11 @@ class Repository {
         );
     }
 
-    public async createEmployee(employee: Employee, branch_id: number): Promise<void> {
+    public async createEmployee(employee: Employee): Promise<void> {
+        const {id} = await (await this.db.query("SELECT id FROM branches WHERE city = $1", [employee.city])).rows[0];
         await this.db.query(
             "INSERT INTO employees (full_name, education, position, salary, branch_id) VALUES ($1, $2, $3, $4, $5)",
-            [employee.full_name, employee.education, employee.position, employee.salary, branch_id]
+            [employee.full_name, employee.education, employee.position, employee.salary, id]
         );
     }
 
@@ -144,7 +145,11 @@ class Repository {
             "INSERT INTO users (username, password, role_id) VALUES ($1, $2, $3) RETURNING id, username, role_id",
             [user.username, user.password, user.role]
         );
-        return res.rows[0];
+        return {
+            id: res.rows[0].id,
+            username: res.rows[0].username,
+            role: idToRole[res.rows[0].role_id as RoleIds]
+        }
     }
 
     public async getUsers(): Promise<User[]> {

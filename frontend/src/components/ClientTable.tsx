@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import MaterialReactTable, {
     MaterialReactTableProps,
     MRT_Cell,
@@ -6,8 +6,10 @@ import MaterialReactTable, {
     MRT_Row,
 } from "material-react-table";
 import {
+    Alert,
     Box,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -20,28 +22,47 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import {Client} from "../entities/client";
+import {MRT_Localization_RU} from "material-react-table/locales/ru";
+import { useFetching } from '../hooks/useFetching';
+import { AuthContext } from '../context/AuthContext';
+import Api from '../api/api';
 
-export interface ClientsTableProps {
-    clients: Client[];
-}
 
-const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
+const IMMUTABLE_COLUMN_KEYS = ['id', 'last_visit', 'total_spent', 'total_visits', 'regular_customer'];
+
+const ClientsTable : FC = () => {
+    const {userInfo} = useContext(AuthContext)!;
+    const api = useMemo(() => new Api(userInfo?.token), [userInfo]);
+    const [clients, setClients] = useState<Client[]>([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [tableData, setTableData] = useState<Client[]>(() => clients);
     const [validationErrors, setValidationErrors] = useState<{
         [cellId: string]: string;
     }>({});
 
-    const handleCreateNewRow = (values: Client) => {
-        tableData.push(values);
-        setTableData([...tableData]);
+    const [fetchClients, isClientsLoading, clientsError] = useFetching(async () => {
+        const clients = await api.getClients();
+        setClients(clients);
+        setTableData(clients.map((client) => ({ ...client, last_visit: new Date(client.last_visit) })));
+    })
+
+    useEffect(() => {
+        fetchClients();
+    }, []);
+
+    const handleCreateNewRow = async (values: Client) => {
+        if (await api.createClient({client: values})) {
+            setCreateModalOpen(false);
+            fetchClients();
+        }
     };
 
     const handleSaveRowEdits: MaterialReactTableProps<Client>['onEditingRowSave'] =
         async ({ exitEditingMode, row, values }) => {
             if (!Object.keys(validationErrors).length) {
+                values.last_visit = new Date(values.last_visit);
                 tableData[row.index] = values;
-                //send/receive api updates here, then refetch or update local table data for re-render
+                await api.updateClient({client: values});
                 setTableData([...tableData]);
                 exitEditingMode(); //required to exit editing mode and close modal
             }
@@ -52,15 +73,16 @@ const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
     };
 
     const handleDeleteRow = useCallback(
-        (row: MRT_Row<Client>) => {
+        async (row: MRT_Row<Client>) => {
             if (
                 !confirm(`Вы точно хотите удалить ${row.getValue('full_name')}?`)
             ) {
                 return;
             }
-            //send api delete request here, then refetch or update local table data for re-render
-            tableData.splice(row.index, 1);
-            setTableData([...tableData]);
+            if (await api.deleteClient(row.getValue('id'))) {
+                setTableData(tableData.filter((client) => client.id !== row.getValue('id')));
+            }
+
         },
         [tableData],
     );
@@ -75,13 +97,11 @@ const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
                 onBlur: (event) => {
                     const isValid = validateRequired(event.target.value);
                     if (!isValid) {
-                        //set validation error for cell if invalid
                         setValidationErrors({
                             ...validationErrors,
                             [cell.id]: `${cell.column.columnDef.header} не может быть пустым`,
                         });
                     } else {
-                        //remove validation error for cell if valid
                         delete validationErrors[cell.id];
                         setValidationErrors({
                             ...validationErrors,
@@ -99,53 +119,85 @@ const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
                 accessorKey: 'id',
                 header: 'ID',
                 enableColumnOrdering: false,
-                enableEditing: false, //disable editing on this column
+                enableEditing: false,
                 enableSorting: false,
-                size: 80,
+                size: 50,
             },
             {
                 accessorKey: 'full_name',
                 header: 'ФИО',
-                size: 200,
+                size: 210,
                 muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
                     ...getCommonEditTextFieldProps(cell),
                 }),
             },
             {
-                accessorKey: 'lastName',
-                header: 'Last Name',
-                size: 140,
+                accessorKey: 'animal_name',
+                header: 'Кличка животного',
                 muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
                     ...getCommonEditTextFieldProps(cell),
                 }),
             },
             {
-                accessorKey: 'email',
-                header: 'Email',
+                accessorKey: 'animal_kind',
+                header: 'Вид животного',
                 muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
                     ...getCommonEditTextFieldProps(cell),
-                    type: 'email',
                 }),
             },
             {
-                accessorKey: 'age',
-                header: 'Age',
+                accessorKey: 'animal_gender',
+                header: 'Пол',
                 size: 80,
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-                    ...getCommonEditTextFieldProps(cell),
-                    type: 'number',
-                }),
+                muiTableBodyCellEditTextFieldProps: {
+                    select: true,
+                    children: ['женский', 'мужской'].map(sex => (
+                        <MenuItem key={sex} value={sex}>
+                            {sex}
+                        </MenuItem>
+                    )),
+                },
             },
             {
-                accessorKey: 'state',
-                header: 'State',
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-                    ...getCommonEditTextFieldProps(cell),
-                }),
+                accessorKey: 'last_visit',
+                header: 'Дата последнего визита',
+                size: 100,
+                enableEditing: false,
+                Cell: ({ cell }) => {
+                    return cell.getValue<Date>().getTime() === 0 ? 'Нет визитов' :
+                    cell.getValue<Date>().toLocaleDateString()
+                }
             },
+            {
+                accessorKey: 'total_spent',
+                header: 'Всего потрачено',
+                size: 80,
+                enableEditing: false,
+            },
+            {
+                accessorKey: 'total_visits',
+                header: 'Всего приёмов',
+                size: 50,
+                enableEditing: false,
+            },
+            {
+                accessorKey: 'regular_customer',
+                header: 'Постоянный клиент',
+                size: 50,
+                enableEditing: false,
+                Cell: ({ cell }) => cell.getValue<boolean>() ? 'Да' : 'Нет'
+            }
         ],
         [getCommonEditTextFieldProps],
     );
+    
+    if (isClientsLoading) {
+        return <CircularProgress />;
+    }
+
+    if (clientsError) {
+        return <Alert severity="error">{clientsError}</Alert>;
+    }
 
     return (
         <>
@@ -155,24 +207,24 @@ const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
                         muiTableHeadCellProps: {
                             align: 'center',
                         },
-                        size: 120,
                     },
                 }}
                 columns={columns}
                 data={tableData}
-                editingMode="modal" //default
+                editingMode="modal"
                 enableColumnOrdering
                 enableEditing
+                localization={MRT_Localization_RU}
                 onEditingRowSave={handleSaveRowEdits}
                 onEditingRowCancel={handleCancelRowEdits}
                 renderRowActions={({ row, table }) => (
                     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                        <Tooltip arrow placement="left" title="Edit">
+                        <Tooltip arrow placement="left" title="Редактировать">
                             <IconButton onClick={() => table.setEditingRow(row)}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip arrow placement="right" title="Delete">
+                        <Tooltip arrow placement="right" title="Удалить">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                 <Delete />
                             </IconButton>
@@ -185,7 +237,7 @@ const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
                         onClick={() => setCreateModalOpen(true)}
                         variant="contained"
                     >
-                        Create New Account
+                        Добавить клиента
                     </Button>
                 )}
             />
@@ -199,11 +251,10 @@ const ClientsTable : FC<ClientsTableProps> = ({clients}) => {
     );
 };
 
-//example of creating a mui dialog modal for creating new rows
 export const CreateNewAccountModal: FC<{
-    columns: MRT_ColumnDef<Person>[];
+    columns: MRT_ColumnDef<Client>[];
     onClose: () => void;
-    onSubmit: (values: Person) => void;
+    onSubmit: (values: Client) => void;
     open: boolean;
 }> = ({ open, columns, onClose, onSubmit }) => {
     const [values, setValues] = useState<any>(() =>
@@ -214,14 +265,13 @@ export const CreateNewAccountModal: FC<{
     );
 
     const handleSubmit = () => {
-        //put your validation logic here
         onSubmit(values);
         onClose();
     };
 
     return (
         <Dialog open={open}>
-            <DialogTitle textAlign="center">Create New Account</DialogTitle>
+            <DialogTitle textAlign="center">Добавить нового клиента</DialogTitle>
             <DialogContent>
                 <form onSubmit={(e) => e.preventDefault()}>
                     <Stack
@@ -231,7 +281,7 @@ export const CreateNewAccountModal: FC<{
                             gap: '1.5rem',
                         }}
                     >
-                        {columns.map((column) => (
+                        {columns.filter(column => !IMMUTABLE_COLUMN_KEYS.includes(column.accessorKey!)).map((column) => (
                             <TextField
                                 key={column.accessorKey}
                                 label={column.header}
@@ -245,9 +295,9 @@ export const CreateNewAccountModal: FC<{
                 </form>
             </DialogContent>
             <DialogActions sx={{ p: '1.25rem' }}>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={onClose}>Отмена</Button>
                 <Button color="secondary" onClick={handleSubmit} variant="contained">
-                    Create New Account
+                    Подтвердить
                 </Button>
             </DialogActions>
         </Dialog>
@@ -255,13 +305,5 @@ export const CreateNewAccountModal: FC<{
 };
 
 const validateRequired = (value: string) => !!value.length;
-const validateEmail = (email: string) =>
-    !!email.length &&
-    email
-        .toLowerCase()
-        .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        );
-const validateAge = (age: number) => age >= 18 && age <= 50;
 
 export default ClientsTable;

@@ -20,10 +20,10 @@ export enum RoleIds {
 }
 
 export const idToRole = {
-    [RoleIds.ADMIN]    : "admin",
-    [RoleIds.USER]     : "user",
-    [RoleIds.EMPLOYEE] : "employee",
-    [RoleIds.MANAGER]  : "manager"
+    [RoleIds.ADMIN]    : "admin" as UserRole,
+    [RoleIds.USER]     : "user" as UserRole,
+    [RoleIds.EMPLOYEE] : "employee" as UserRole,
+    [RoleIds.MANAGER]  : "manager" as UserRole
 }
 
 export const roleToId = {

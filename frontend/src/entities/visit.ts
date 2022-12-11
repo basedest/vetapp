@@ -1,5 +1,5 @@
 export interface Visit {
-    id          : number
+    id?          : number
     client_id   : number
     employee_id : number
     procedures  : string
