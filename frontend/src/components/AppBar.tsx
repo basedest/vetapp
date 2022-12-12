@@ -11,9 +11,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import PetsIcon from '@mui/icons-material/Pets';
-import { AccountCircle } from '@mui/icons-material';
-import { AuthContext } from '../context/AuthContext';
-import { Link, redirect, useNavigate } from 'react-router-dom';
+import {AccountCircle} from '@mui/icons-material';
+import {AuthContext} from '../context/AuthContext';
+import {Link, useNavigate} from 'react-router-dom';
 
 export interface MenuItemEntry {
     label: string;

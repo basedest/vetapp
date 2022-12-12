@@ -1,12 +1,13 @@
 import express from "express";
 import pkg from "body-parser";
-const {json} = pkg;
 import cors from "cors";
 import userRouter from "./router/UserRouter";
 import branchRouter from "./router/BranchRouter";
 import employeeRouter from "./router/EmployeeRouter";
 import visitRouter from "./router/VisitRouter";
 import clientRouter from "./router/ClientRouter";
+
+const {json} = pkg;
 
 const app = express();
 app.use(json(), cors());

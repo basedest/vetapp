@@ -1,10 +1,5 @@
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import MaterialReactTable, {
-    MaterialReactTableProps,
-    MRT_Cell,
-    MRT_ColumnDef,
-    MRT_Row,
-} from "material-react-table";
+import {FC, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import MaterialReactTable, {MaterialReactTableProps, MRT_Cell, MRT_ColumnDef, MRT_Row,} from "material-react-table";
 import {
     Box,
     Button,
@@ -17,12 +12,12 @@ import {
     TextField,
     Tooltip,
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import {Delete, Edit} from "@mui/icons-material";
 import {MRT_Localization_RU} from "material-react-table/locales/ru";
 import {Visit} from "../entities/visit";
-import { AuthContext } from '../context/AuthContext';
+import {AuthContext} from '../context/AuthContext';
 import Api from '../api/api';
-import { useFetching } from '../hooks/useFetching';
+import {useFetching} from '../hooks/useFetching';
 
 const IMMUTABLE_COLUMN_KEYS = ['id'];
 

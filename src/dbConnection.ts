@@ -1,4 +1,5 @@
 import pkg from "pg";
+
 const {Pool} = pkg;
 
 //check if we have all the environment variables we need

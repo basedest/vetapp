@@ -1,10 +1,5 @@
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import MaterialReactTable, {
-    MaterialReactTableProps,
-    MRT_Cell,
-    MRT_ColumnDef,
-    MRT_Row,
-} from "material-react-table";
+import {FC, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import MaterialReactTable, {MaterialReactTableProps, MRT_Cell, MRT_ColumnDef, MRT_Row,} from "material-react-table";
 import {
     Alert,
     Box,
@@ -20,11 +15,11 @@ import {
     TextField,
     Tooltip,
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import {Delete, Edit} from "@mui/icons-material";
 import {Client} from "../entities/client";
 import {MRT_Localization_RU} from "material-react-table/locales/ru";
-import { useFetching } from '../hooks/useFetching';
-import { AuthContext } from '../context/AuthContext';
+import {useFetching} from '../hooks/useFetching';
+import {AuthContext} from '../context/AuthContext';
 import Api from '../api/api';
 
 
