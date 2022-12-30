@@ -1,10 +1,7 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -12,12 +9,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {Link as RouterLink} from 'react-router-dom';
-import api from '../api/api';
-import { AuthContext } from '../context/AuthContext';
-import { Dialog, DialogTitle, Modal } from '@mui/material';
-import { Stack } from '@mui/system';
-import { Error } from '@mui/icons-material';
 import Api from '../api/api';
+import {AuthContext} from '../context/AuthContext';
+import {Dialog} from '@mui/material';
+import {Stack} from '@mui/system';
+import {Error} from '@mui/icons-material';
 
 export default function SignUp() {
     const [errorModalOpen, setErrorModalOpen] = React.useState(false);
@@ -55,8 +51,8 @@ export default function SignUp() {
                         open={errorModalOpen}
                         onClose={() => setErrorModalOpen(false)}
                     >
-                        <Container sx={{padding: 2}}>
-                            <Stack direction="row" spacing={1} alignItems="center">
+                        <Container>
+                            <Stack direction="row" spacing={1} alignItems="center" component={Box} sx={{padding: 2}}>
                                 <Error sx={{color: 'red'}} />
                                 <Typography variant="h6">Ошибка</Typography>
                             </Stack>

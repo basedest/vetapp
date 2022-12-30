@@ -1,8 +1,7 @@
-import { Typography} from '@mui/material';
-import { MenuItemEntry } from '../components/AppBar';
-import { Link } from 'react-router-dom';
-import { UserRole } from '../entities/user';
-import { Link as MaterialLink } from '@mui/material';
+import {Link as MaterialLink, Typography} from '@mui/material';
+import {MenuItemEntry} from '../components/AppBar';
+import {Link} from 'react-router-dom';
+import {UserRole} from '../entities/user';
 
 const employeeMenu : MenuItemEntry[] = [
     {

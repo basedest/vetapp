@@ -1,10 +1,9 @@
-import { Stack, Box, Card, Paper, Autocomplete, TextField, Typography, CircularProgress } from "@mui/material"
-import { useContext, useEffect, useMemo, useState } from "react";
+import {Autocomplete, Box, CircularProgress, Paper, Stack, TextField, Typography} from "@mui/material"
+import {useContext, useEffect, useMemo, useState} from "react";
 import Api from "../api/api";
 import VisitsTable from "../components/VisitsTable"
-import { AuthContext } from "../context/AuthContext";
-import { Visit } from "../entities/visit";
-import { useFetching } from "../hooks/useFetching";
+import {AuthContext} from "../context/AuthContext";
+import {useFetching} from "../hooks/useFetching";
 
 const VisitsPage = () => {
     const {userInfo} = useContext(AuthContext)!;
@@ -12,7 +11,7 @@ const VisitsPage = () => {
     const [appointments, setAppointments] = useState<number | null>(null);
     const api = useMemo(() => new Api(userInfo?.token), [userInfo]);
 
-    const [fetchAppointments, isAppointmentsLoading, appointmentsError] = useFetching(async () => {
+    const [fetchAppointments, isAppointmentsLoading, _] = useFetching(async () => {
         const appointments = await api.getEmployeeAppointmentCount(id);
         console.log(appointments);
         
